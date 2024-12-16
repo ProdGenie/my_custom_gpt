@@ -21,13 +21,13 @@
             const resultDiv = document.getElementById("result");
             resultDiv.innerText = "Loading...";
 
-            const response = await fetch("/generate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ word: word })
-            });
+
+const response = await fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ word: word })
+});
+
 
             const data = await response.json();
             if (data.result) {
