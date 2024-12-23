@@ -1,40 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VocabGPT</title>
+    <meta charset="UTF-8" />
+    <title>My Custom GPT</title>
 </head>
 <body>
-    <h1>VocabGPT - Learn English Vocabulary</h1>
-    <p>Enter a word to get its meaning, synonyms, example sentences, and translations.</p>
-    
-    <input type="text" id="wordInput" placeholder="Enter a word" />
-    <button onclick="fetchVocabulary()">Submit</button>
-    
-    <h3>Result:</h3>
-    <div id="result" style="white-space: pre-wrap;"></div>
+    <h1>Ask the GPT</h1>
+    <textarea id="userInput" rows="5" cols="40" placeholder="Ask a question..."></textarea>
+    <br />
+    <button onclick="sendPrompt()">Send</button>
+    <div id="response"></div>
 
     <script>
-        async function fetchVocabulary() {
-            const word = document.getElementById("wordInput").value;
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerText = "Loading...";
-
-
-const response = await fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ word: word })
-});
-
-
-            const data = await response.json();
-            if (data.result) {
-		resultDiv.innerHTML = data.result.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-
-            } else {
-                resultDiv.innerText = "Error: " + data.error;
+        async function sendPrompt() {
+            const userInput = document.getElementById("userInput").value;
+            const responseDiv = document.getElementById("response");
+            responseDiv.innerText = "Thinking...";
+            try {
+                const res = await fetch("/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_input: userInput })
+                });
+                const data = await res.json();
+                responseDiv.innerText = data.result || data.error;
+            } catch (error) {
+                responseDiv.innerText = "Error: " + error.message;
             }
         }
     </script>
